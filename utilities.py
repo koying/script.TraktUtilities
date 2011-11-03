@@ -420,7 +420,10 @@ def setXBMCMoviePlaycount(imdb_id, playcount):
     # c09 => IMDB ID
     match = xbmcHttpapiQuery(
     "SELECT movie.idFile FROM movie"+
-    " WHERE movie.c09='%(imdb_id)s'" % {'imdb_id':xcp(imdb_id)})
+    " WHERE movie.c09='%(imdb_id)s'" % {'imdb_id':xcp(imdb_id)}+
+    " UNION"+
+    " SELECT movie.idFile FROM movie"+
+    "  WHERE movie.c09=%(imdb_id)s" % {'imdb_id': imdb_id.lstrip('t')})
     
     if not match:
         #add error message here
@@ -557,6 +560,9 @@ def getMovieIdFromXBMC(imdb_id, title):
     match = xbmcHttpapiQuery(
     " SELECT idMovie FROM movie"+
     "  WHERE c09='%(imdb_id)s'" % {'imdb_id':imdb_id}+
+    " UNION"+
+    " SELECT idMovie FROM movie"+
+    "  WHERE c09=%(imdb_id)s" % {'imdb_id': imdb_id.lstrip('t')}+
     " UNION"+
     " SELECT idMovie FROM movie"+
     "  WHERE upper(c00)='%(title)s'" % {'title':xcp(title.upper())}+
